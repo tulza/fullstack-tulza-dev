@@ -1,4 +1,3 @@
-'use client';
 
 import React from 'react';
 import {
@@ -30,7 +29,13 @@ export const IntroAnimation = () => {
   }, []);
 
   return (
-    <motion.div className="fixed inset-0 flex size-full items-center justify-center bg-black">
+    <motion.div
+      className="fixed inset-0 flex size-full items-center justify-center bg-black"
+      animate={{
+        opacity: hasFinished ? 0 : 1,
+        filter: hasFinished ? 'blur(4px)' : 'blur(0px)',
+      }}
+    >
       <LoadingCircles hasFinish={hasFinished} />
       <motion.div className="absolute bottom-0 left-0 p-8 text-5xl font-bold mix-blend-difference">
         {rounded}
@@ -47,7 +52,7 @@ const loadingTransition = (hasFinish: boolean) =>
       } as Transition)
     : ({
         repeat: Infinity,
-        duration: 8,
+        duration: 4,
         ease: [0.37, 0, 0.63, 1],
       } as Transition);
 

@@ -2,9 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 
+import { DEVCONFIG } from '@/app/devconfig';
 import { cn } from '@/lib/utils';
+import {
+  pageContainerVariants,
+  SheetInVariants,
+  SheetOutVariants,
+} from './transitionVariants';
 
 type TransitionProps = {
   children: React.ReactNode;
@@ -24,23 +30,7 @@ export const useTransition = () => {
   return context;
 };
 
-const pageContainerVariants: Variants = {
-  initial: { filter: 'blur(4px)' },
-  animate: { filter: 'blur(4px)' },
-  finish: { filter: 'blur(0px)' },
-};
-
-const SheetInVariants: Variants = {
-  initial: { y: '100%' },
-  animate: { y: '0%' },
-};
-
-const SheetOutVariants: Variants = {
-  initial: { y: '0%' },
-  animate: { y: '-100%' },
-};
-
-let isFirstRender = true;
+let hasFirstRender = DEVCONFIG.ENABLE_FIRST_LOAD_TRANSITION;
 
 const Transition = ({ children }: TransitionProps) => {
   const router = useRouter();
@@ -59,7 +49,7 @@ const Transition = ({ children }: TransitionProps) => {
   };
 
   useEffect(() => {
-    isFirstRender = false;
+    hasFirstRender = false;
   }, []);
 
   const [isTransitioning, setTransitioning] = useState(false);
@@ -74,7 +64,6 @@ const Transition = ({ children }: TransitionProps) => {
         )}
         initial="initial"
         animate={isTransitioning ? 'animate' : 'finish'}
-        transition={{ ease: 'easeOut', duration: isTransitioning ? 0.3 : 0 }}
         variants={pageContainerVariants}
       >
         {children}
@@ -86,17 +75,15 @@ const Transition = ({ children }: TransitionProps) => {
             className="absolute inset-0 size-full bg-slate-800"
             initial="initial"
             animate="animate"
-            transition={{ ease: 'easeOut', duration: 0.2, delay: 0.3 }}
             variants={SheetInVariants}
             onAnimationComplete={handleTransitionRoute}
           />
         )}
-        {!isTransitioning && !isFirstRender && (
+        {!isTransitioning && hasFirstRender && (
           <motion.div
             className="fixed inset-0 size-full bg-slate-800"
             initial="initial"
             animate="animate"
-            transition={{ ease: 'easeOut', duration: 0.2 }}
             variants={SheetOutVariants}
           />
         )}

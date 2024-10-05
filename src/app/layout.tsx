@@ -51,9 +51,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Transition>
-          <div className="min-h-dvh overflow-hidden w-dvw">{children}</div>
-        </Transition>
+        <Transition>{children}</Transition>
       </body>
     </html>
   );
